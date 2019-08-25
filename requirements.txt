@@ -10,3 +10,4 @@ django
 djangorestframework
 requests
 wikipedia
+lxml

@@ -9,6 +9,7 @@ from fake_useragent import UserAgent
 import wikipedia
 import random
 import pyowm
+from .models import Country
 owm = pyowm.OWM('22f3801dd0c2afc5dfb7c7956dfa9be0')
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
@@ -106,6 +107,7 @@ class NewsView(APIView):
         url = (f'https://newsapi.org/v2/top-headlines?'
                'sources=bbc-news&'
                'apiKey=76b1467e0abc4b5996e309418c6fbd89')
+
         response = requests.get(url)
         response = response.json()
         articles = response['articles']
@@ -120,3 +122,4 @@ class NewsView(APIView):
             }
 
             for article in articles])
+

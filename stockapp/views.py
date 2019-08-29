@@ -30,14 +30,14 @@ class StockView(APIView):
         img=soup.find('img',{'id':"dimg_16"})
         return Response({
             'img':img['title'],
-            'price': item['05. price'],
-            'low': item["04. low"],
-            'high': item['03. high'],
-            "volume": item['06. volume'],
-            'previousclose': item['08. previous close'],
-            'change': item['09. change'],
-            'changepercent': item['10. change percent'],
-            'open': item['02. open']
+            'price': str(item['05. price']),
+            'low': str(item["04. low"]),
+            'high': str(item['03. high']),
+            "volume": str(item['06. volume']),
+            'previousclose': str(item['08. previous close']),
+            'change': str(item['09. change']),
+            'changepercent': str(item['10. change percent']),
+            'open': str(item['02. open'])
 
 
 

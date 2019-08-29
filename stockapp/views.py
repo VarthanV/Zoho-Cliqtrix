@@ -24,8 +24,24 @@ class StockView(APIView):
         response = requests.get(
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
         data = json.loads(response.text)
-        price = data["Global Quote"]['05. price']
-        return Response({'price': price})
+        item = data["Global Quote"]
+        response=requests.get(f'https://www.google.com/search?q={code}+stock&oq={code}+stock&aqs=chrome..69i57j0l5.3447j1j0&sourceid=chrome&ie=UTF-8',headers={'User-Agent': agent})
+        soup=BeautifulSoup(response.text,'lxml')
+        img=soup.find('img',{'id':"dimg_16"})
+        return Response({
+            'img':img['title'],
+            'price': item['05. price'],
+            'low': item["04. low"],
+            'high': item['03. high'],
+            "volume": item['06. volume'],
+            'previousclose': item['08. previous close'],
+            'change': item['09. change'],
+            'changepercent': item['10. change percent'],
+            'open': item['02. open']
+
+
+
+        })
 
 
 class AmazonView(APIView):
@@ -122,4 +138,3 @@ class NewsView(APIView):
             }
 
             for article in articles])
-

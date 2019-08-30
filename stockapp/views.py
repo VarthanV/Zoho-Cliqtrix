@@ -25,9 +25,9 @@ class StockView(APIView):
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
         data = json.loads(response.text)
         item = data["Global Quote"]
-       
+
         return Response({
-            'code':code,
+            'code': code,
             'price': str(item['05. price']),
             'low': str(item["04. low"]),
             'high': str(item['03. high']),
@@ -118,8 +118,12 @@ class NewsView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, country):
-        key='76b1467e0abc4b5996e309418c6fbd89'
-        url=f'https://newsapi.org/v2/top-headlines?country={country}&category={request.GET.get("category")}&apiKey={key}'
+        key = '76b1467e0abc4b5996e309418c6fbd89'
+        code = Country.objects.get(name=country)
+        if code.code is None:
+            return Response({'status': 404})
+
+        url = f'https://newsapi.org/v2/top-headlines?country={code}&category={request.GET.get("category")}&apiKey={key}'
         response = requests.get(url)
         response = response.json()
         print(response)

@@ -25,11 +25,9 @@ class StockView(APIView):
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
         data = json.loads(response.text)
         item = data["Global Quote"]
-        response=requests.get(f'https://www.google.com/search?q={code}+stock&oq={code}+stock&aqs=chrome..69i57j0l5.3447j1j0&sourceid=chrome&ie=UTF-8',headers={'User-Agent': agent})
-        soup=BeautifulSoup(response.text,'lxml')
-        img=soup.find('img',{'id':"dimg_16"})
+       
         return Response({
-            'img':img['title'],
+            'code':code,
             'price': str(item['05. price']),
             'low': str(item["04. low"]),
             'high': str(item['03. high']),
@@ -120,12 +118,11 @@ class NewsView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, country):
-        url = (f'https://newsapi.org/v2/top-headlines?'
-               'sources=bbc-news&'
-               'apiKey=76b1467e0abc4b5996e309418c6fbd89')
-
+        key='76b1467e0abc4b5996e309418c6fbd89'
+        url=f'https://newsapi.org/v2/top-headlines?country={country}&category={request.GET.get("category")}&apiKey={key}'
         response = requests.get(url)
         response = response.json()
+        print(response)
         articles = response['articles']
 
         return Response([
@@ -134,7 +131,7 @@ class NewsView(APIView):
                 'description':article['description'],
                 'url':article['url'],
                 'imgUrl':article['urlToImage'],
-                'content': str(article['content'])
+                'content': article['content']
             }
 
             for article in articles])

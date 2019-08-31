@@ -9,6 +9,7 @@ from fake_useragent import UserAgent
 import wikipedia
 import random
 import pyowm
+from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Country
 owm = pyowm.OWM('22f3801dd0c2afc5dfb7c7956dfa9be0')
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
@@ -70,12 +71,20 @@ class WikipediaView(APIView):
     def get(self, request):
         name = request.GET.get('name')
         modname = str(name).replace('%20', '')
-        page = wikipedia.page(name)
-        return Response({
-            "title": page.title,
-            'content': page.content,
-            'image': page.images[random.randrange(0, len(page.images)-1)]
-        })
+        try:
+            page = wikipedia.page(modname)
+            return Response({
+                'status': 200,
+                "title": page.title,
+                'content': page.summary,
+                'image': str(page.images[random.randrange(0, len(page.images)-1)]),
+                'detailurl': f'https://en.wikipedia.org/wiki/{name}'
+            })
+        except DisambiguationError or PageError as e:
+            print(e)
+            return Response({
+                'status': 404
+            })
 
 
 class WeatherView(APIView):
@@ -119,23 +128,23 @@ class NewsView(APIView):
 
     def get(self, request, country):
         key = '76b1467e0abc4b5996e309418c6fbd89'
-        code = Country.objects.get(name=country)
-        if code.code is None:
-            return Response({'status': 404})
-
-        url = f'https://newsapi.org/v2/top-headlines?country={code}&category={request.GET.get("category")}&apiKey={key}'
+        url = f'https://newsapi.org/v2/top-headlines?country={country}&category={request.GET.get("category")}&apiKey={key}'
         response = requests.get(url)
         response = response.json()
         print(response)
         articles = response['articles']
+        if len(articles) == 0:
+            return Response({"status": 404})
 
-        return Response([
-            {
-                'title': article['title'],
-                'description':article['description'],
-                'url':article['url'],
-                'imgUrl':article['urlToImage'],
-                'content': article['content']
-            }
+        return Response({
+            'status': 200,
+            'articles': [
+                {
+                    'title': article['title'],
+                    'description':article['description'],
+                    'url':article['url'],
+                    'imgUrl':article['urlToImage'],
+                    'content': article['content']
+                }
 
-            for article in articles])
+                for article in articles]})

@@ -11,10 +11,17 @@ import random
 import pyowm
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Country
-owm = pyowm.OWM('22f3801dd0c2afc5dfb7c7956dfa9be0')
+
+owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
 agent = str(ua.chrome)
+
+
+def convert_temp(kelvin):
+
+    celsius = kelvin-273
+    return celsius
 
 
 class StockView(APIView):
@@ -91,29 +98,32 @@ class WeatherView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        climate = ''
-        url = ''
-        name = request.GET.get('name')
-        observation = owm.weather_at_place(name)
-        w = observation.get_weather()
-        temp = w.get_temperature('celsius')
-        response = requests.get(
-            f'https://www.google.com/search?q=temperature+{name}&oq=temperature&aqs=chrome..69i57j69i59l2j0l3.4036j0j0&sourceid=chrome&ie=UTF-8', headers={'User-Agent': agent})
-        soup = BeautifulSoup(response.text, 'lxml')
-        climate += soup.find(id='wob_dc').get_text()
-        if 'cloudy'.title() in climate.title():
-            print("Cloudy")
-        elif 'clear'.title() in climate.title():
-            print('clear')
-        elif 'sunny'.title() in climate.title():
-            print("Sunny")
+        base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
-        return Response({
-            'min': temp['temp_min'],
-            'max': temp['temp_max'],
-            'temp': temp['temp'],
-            'climate': climate
-        })
+        complete_url = base_url + "appid=" + \
+            owm + "&q=" + request.GET.get('name')
+
+        response = requests.get(complete_url)
+
+        x = response.json()
+        if x["cod"] != "404":
+
+            y = x["main"]
+            current_temperature = y["temp"]
+            current_pressure = y["pressure"]
+
+            current_humidity = y["humidity"]
+
+            z = x["weather"]
+
+   
+            weather_description = z[0]["description"]
+            return Response({
+                'temp':round(convert_temp(current_temperature),2),
+                'pressure':current_pressure,
+                'humidity':current_humidity,
+                'weather':weather_description
+            })
 
 
 class PNRCheckingView(APIView):

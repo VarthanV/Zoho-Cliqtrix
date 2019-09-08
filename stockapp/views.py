@@ -58,7 +58,8 @@ class AmazonView(APIView):
         bucket = list()
 
         while len(bucket) == 0:
-            response = requests.get(f"https://www.amazon.in/s?k={modname}&ref=nb_sb_noss_2",  headers={'User-Agent': agent})
+            response = requests.get(
+                f"https://www.amazon.in/s?k={modname}&ref=nb_sb_noss_2",  headers={'User-Agent': agent})
             soup = BeautifulSoup(response.text, 'lxml')
             for a, b, c, d, e in zip(soup.findAll('span', {'class': 'a-size-medium a-color-base a-text-normal'}), soup.findAll('span', {'class': 'a-price-whole'}), soup.findAll('img', {'class': 's-image'}), soup.findAll('a', {'class': 'a-link-normal a-text-normal'}), soup.findAll('span', {'class': 'a-icon-alt'})):
                 # print(f"Name : {a.get_text()} Price :{b.get_text()}  Image url {c['src']}")
@@ -111,13 +112,12 @@ class WeatherView(APIView):
 
             z = x["weather"]
 
-   
             weather_description = z[0]["description"]
             return Response({
-                'temp':round(convert_temp(current_temperature),2),
-                'pressure':current_pressure,
-                'humidity':current_humidity,
-                'weather':weather_description
+                'temp': round(convert_temp(current_temperature), 2),
+                'pressure': current_pressure,
+                'humidity': current_humidity,
+                'weather': weather_description
             })
         else:
             return Response()
@@ -155,3 +155,5 @@ class NewsView(APIView):
                 }
 
                 for article in articles]})
+
+

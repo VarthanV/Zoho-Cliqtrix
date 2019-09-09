@@ -29,7 +29,8 @@ def check_name(title):
     r'(?::\d+)?'  # optional port
     r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     if re.match(regex, title):
-        return title.split('/')[4]
+        item=title.split('/')
+        return item[4].replace('-',' ')
     else:
         return title
 

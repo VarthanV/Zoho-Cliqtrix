@@ -36,6 +36,17 @@ class ConvertView(APIView):
         return Response(response.json())
 
 
+class DomainView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, domain):
+        headers= {
+            'Authorization': 'sso-key 3mM44UaCMkPo4p_VqQC796SGSRNAXsMVZ8vos:Cr4PmgV1Y1vqMU4oZ5Zrxd'}
+        #https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false';
+        url=f'https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false'
+        response=requests.get(url,headers=headers)
+        return Response(response.json())
+
 class StockView(APIView):
     permission_classes = (AllowAny,)
 

@@ -249,5 +249,5 @@ class TestView(APIView):
     permission_classes=(AllowAny,)
     def get(self,request):
         proc = subprocess.Popen(['sudo apt install nodejs'], stdout=subprocess.PIPE)
-        outp = proc.stdout.read()
+        outp=proc.communicate()
         return Response(outp)

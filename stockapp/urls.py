@@ -11,7 +11,10 @@ urlpatterns = [
     path('domain/<str:domain>/',views.DomainView.as_view()),
     path('pix/<str:term>/',views.PixView.as_view()),
     path('zone/<str:code>/',views.ZoneView.as_view()),
-    path('time/',views.TimeView.as_view())
+    path('time/',views.TimeView.as_view()),
+    path('getbook/',views.BookmarkGetView.as_view()),
+    path('newbook/',views.BookmarkCreateView.as_view()),
+    path('test/',views.TestView.as_view())
 
   
  

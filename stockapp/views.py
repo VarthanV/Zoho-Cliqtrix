@@ -9,9 +9,9 @@ from fake_useragent import UserAgent
 import wikipedia
 import random
 import pyowm
+import subprocess
 from wikipedia.exceptions import DisambiguationError, PageError
-from .models import Country
-
+from .models import Bookmark
 owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
@@ -62,28 +62,36 @@ class DomainView(APIView):
 class StockView(APIView):
     permission_classes = (AllowAny,)
 
-    def get(self, request,code):
+    def get(self, request, code):
         response = requests.get(
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
-       
+
         return Response(response.json())
+
+
 class ZoneView(APIView):
-      permission_classes = (AllowAny,)
-      def get(self,request,code):
-          key = "71OD11E2E8ZG"
-          #"http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName;
-          url=f'http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName'
-          response=requests.get(url)
-          return Response(response.json())
-class TimeView(APIView):
-    permission_classes=(AllowAny,)
-    def get(self,request):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, code):
         key = "71OD11E2E8ZG"
-        zone=request.GET.get('zone')
-        #"http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted;
-        url=f'http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted'
-        response=requests.get(url)
+        # "http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName;
+        url = f'http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName'
+        response = requests.get(url)
         return Response(response.json())
+
+
+class TimeView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        key = "71OD11E2E8ZG"
+        zone = request.GET.get('zone')
+        # "http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted;
+        url = f'http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted'
+        response = requests.get(url)
+        return Response(response.json())
+
+
 class AmazonView(APIView):
     permission_classes = (AllowAny,)
 
@@ -201,3 +209,45 @@ class NewsView(APIView):
         url = f'https://newsapi.org/v2/top-headlines?country={country}&category={cat}&apiKey={key}'
         response = requests.get(url)
         return Response(response.json())
+
+
+class BookmarkGetView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        bookmarks = Bookmark.objects.filter(email=request.POST['email'][0])
+        if bookmarks:
+            return Response(
+                {   'status':'200',
+                    'bookmarks':[
+                {
+                    'title': bookmark.title,
+                    'url': bookmark.url
+                }
+                for bookmark in bookmarks]}
+                )
+        return Response()
+
+
+class BookmarkCreateView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        data = dict(request.POST)
+        email = data['email'][0]
+        title = data['title'][0]
+        url = data['url'][0]
+        bookmark = Bookmark()
+        bookmark.email = email
+
+        bookmark.title = title
+        bookmark.url = url
+        bookmark.save()
+        return Response({'status': 200})
+
+class TestView(APIView):
+    permission_classes=(AllowAny,)
+    def get(self,request):
+        proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
+        outp = proc.stdout.read()
+        return Response(outp)

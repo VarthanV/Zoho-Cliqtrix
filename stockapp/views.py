@@ -62,25 +62,11 @@ class DomainView(APIView):
 class StockView(APIView):
     permission_classes = (AllowAny,)
 
-    def get(self, request):
-        code = request.GET.get('code')
+    def get(self, request,code):
         response = requests.get(
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
-        data = json.loads(response.text)
-        item = data["Global Quote"]
-
-        return Response({
-            'code': code,
-            'price': str(item['05. price']),
-            'low': str(item["04. low"]),
-            'high': str(item['03. high']),
-            "volume": str(item['06. volume']),
-            'previousclose': str(item['08. previous close']),
-            'change': str(item['09. change']),
-            'changepercent': str(item['10. change percent']),
-            'open': str(item['02. open'])
-
-        })
+       
+        return Response(response.json())
 
 
 class AmazonView(APIView):

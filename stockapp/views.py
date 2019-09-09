@@ -24,6 +24,18 @@ def convert_temp(kelvin):
     return celsius
 
 
+class ConvertView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, from_code):
+        to = request.GET.get('to')
+        key = 'MGXCG9ZZLET2BTYQ'
+        # "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=" + from + "&to_currency=" + to + "&apikey=" + apiKey;
+        url = f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={from_code}&to_currency={to}&apikey={key}'
+        response = requests.get(url)
+        return Response(response.json())
+
+
 class StockView(APIView):
     permission_classes = (AllowAny,)
 
@@ -67,40 +79,46 @@ class AmazonView(APIView):
                     {"name": a.get_text(), 'price': b.get_text(), 'imgurl': c['src'], 'id': d["href"].split("/")[3], 'rating': e.get_text()[0]})
         return Response(bucket)
 
+
 class MediumView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
         name = request.GET.get("name")
         url = f"https://medium.com/search?q={name}"
-        res = requests.get(url,headers={'User-Agent':str(ua.random)})
-        html = BeautifulSoup(res.text,"html.parser")
-        posts = html.findAll("div",{"class":"postArticle"})
+        res = requests.get(url, headers={'User-Agent': str(ua.random)})
+        html = BeautifulSoup(res.text, "html.parser")
+        posts = html.findAll("div", {"class": "postArticle"})
         posts_list = []
-        for index,post in enumerate(posts):
+        for index, post in enumerate(posts):
             post_map = {}
-            title = post.findChildren("h3",recursive=True)
+            title = post.findChildren("h3", recursive=True)
             if len(title) == 0:
                 continue
             else:
-                post_map.update({"title":title[0].find(text=True)})
-            img = post.findChildren("img",{"class":"progressiveMedia-image"},recursive=True)
+                post_map.update({"title": title[0].find(text=True)})
+            img = post.findChildren(
+                "img", {"class": "progressiveMedia-image"}, recursive=True)
             if len(img) > 0:
-                post_map.update({"img":img[0].attrs.get("data-src")})
+                post_map.update({"img": img[0].attrs.get("data-src")})
             else:
-                post_map.update({"img":""})
-            likes = post.findChildren("button",{"class":"button button--chromeless u-baseColor--buttonNormal js-multirecommendCountButton u-disablePointerEvents"},recursive=True)
+                post_map.update({"img": ""})
+            likes = post.findChildren("button", {
+                                      "class": "button button--chromeless u-baseColor--buttonNormal js-multirecommendCountButton u-disablePointerEvents"}, recursive=True)
             if len(likes) > 0:
-                post_map.update({"likes":likes[0].contents[0]})
+                post_map.update({"likes": likes[0].contents[0]})
             else:
-                post_map.update({"likes":0})
-            url = post.findChildren("a",{"class":"button button--smaller button--chromeless u-baseColor--buttonNormal"},recursive=True)
+                post_map.update({"likes": 0})
+            url = post.findChildren(
+                "a", {"class": "button button--smaller button--chromeless u-baseColor--buttonNormal"}, recursive=True)
             if len(url) > 0:
-                post_map.update({"url":url[0].attrs.get("href").split("?")[0]})
+                post_map.update(
+                    {"url": url[0].attrs.get("href").split("?")[0]})
                 posts_list.append(post_map)
             else:
                 continue
         return Response(posts_list)
+
 
 class WikipediaView(APIView):
     permission_classes = (AllowAny,)
@@ -189,5 +207,3 @@ class NewsView(APIView):
                 }
 
                 for article in articles]})
-
-

@@ -36,16 +36,28 @@ class ConvertView(APIView):
         return Response(response.json())
 
 
+class PixView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, term):
+        key = '12208529-4c52328be6cfa6e47e390cdaf'
+        # 'https://pixabay.com/api/?key={key}&q={term}&image_type=photo&pretty=true';
+        url = f'https://pixabay.com/api/?key={key}&q={term}&image_type=photo&pretty=true'
+        response = requests.get(url).json()
+        return Response(response)
+
+
 class DomainView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, domain):
-        headers= {
+        headers = {
             'Authorization': 'sso-key 3mM44UaCMkPo4p_VqQC796SGSRNAXsMVZ8vos:Cr4PmgV1Y1vqMU4oZ5Zrxd'}
-        #https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false';
-        url=f'https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false'
-        response=requests.get(url,headers=headers)
+        # https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false';
+        url = f'https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false'
+        response = requests.get(url, headers=headers)
         return Response(response.json())
+
 
 class StockView(APIView):
     permission_classes = (AllowAny,)
@@ -197,11 +209,9 @@ class NewsView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, country):
-        key='76b1467e0abc4b5996e309418c6fbd89'
-        #https://newsapi.org/v2/top-headlines?country={con} &category={cat}&apiKey={key};
-        cat=request.GET.get('cat').replace('%20','')
-        url=f'https://newsapi.org/v2/top-headlines?country={country}&category={cat}&apiKey={key}'
-        response=requests.get(url)
+        key = '76b1467e0abc4b5996e309418c6fbd89'
+        # https://newsapi.org/v2/top-headlines?country={con} &category={cat}&apiKey={key};
+        cat = request.GET.get('cat').replace('%20', '')
+        url = f'https://newsapi.org/v2/top-headlines?country={country}&category={cat}&apiKey={key}'
+        response = requests.get(url)
         return Response(response.json())
-        
-

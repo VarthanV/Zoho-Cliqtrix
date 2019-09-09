@@ -11,7 +11,7 @@ urlpatterns = [
     path('domain/<str:domain>/',views.DomainView.as_view()),
     path('pix/<str:term>/',views.PixView.as_view()),
     path('zone/<str:code>/',views.ZoneView.as_view()),
-    path('time/<str:zone>/',views.TimeView.as_view())
+    path('time/',views.TimeView.as_view())
 
   
  

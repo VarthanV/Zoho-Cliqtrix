@@ -77,8 +77,9 @@ class ZoneView(APIView):
           return Response(response.json())
 class TimeView(APIView):
     permission_classes=(AllowAny,)
-    def get(self,request,zone):
+    def get(self,request):
         key = "71OD11E2E8ZG"
+        zone=request.GET.get('zone')
         #"http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted;
         url=f'http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted'
         response=requests.get(url)

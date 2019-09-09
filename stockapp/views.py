@@ -197,24 +197,11 @@ class NewsView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, country):
-        key = '76b1467e0abc4b5996e309418c6fbd89'
-        url = f'https://newsapi.org/v2/top-headlines?country={country}&category={request.GET.get("category")}&apiKey={key}'
-        response = requests.get(url)
-        response = response.json()
-        print(response)
-        articles = response['articles']
-        if len(articles) == 0:
-            return Response({"status": 404})
+        key='76b1467e0abc4b5996e309418c6fbd89'
+        #https://newsapi.org/v2/top-headlines?country={con} &category={cat}&apiKey={key};
+        cat=request.GET.get('cat').replace('%20','')
+        url=f'https://newsapi.org/v2/top-headlines?country={country}&category={cat}&apiKey={key}'
+        response=requests.get(url)
+        return Response(response.json())
+        
 
-        return Response({
-            'status': 200,
-            'articles': [
-                {
-                    'title': article['title'],
-                    'description':article['description'],
-                    'url':article['url'],
-                    'imgUrl':article['urlToImage'],
-                    'content': article['content']
-                }
-
-                for article in articles]})

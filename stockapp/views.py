@@ -222,6 +222,7 @@ class BookmarkGetView(APIView):
                 {   'status':'200',
                     'bookmarks':[
                 {
+                    'pk':bookmark.pk,
                     'title': bookmark.title,
                     'url': bookmark.url
                 }

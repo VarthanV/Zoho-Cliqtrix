@@ -12,16 +12,26 @@ import pyowm
 import subprocess
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Bookmark
+import re
 owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
 agent = str(ua.random)
 
 
-def convert_temp(kelvin):
-
-    celsius = kelvin-273
-    return celsius
+def check_name(title):
+    regex = re.compile(
+    r'^(?:http|ftp)s?://'  # http:// or https://
+    # domain...
+    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+    r'localhost|'  # localhost...
+    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+    r'(?::\d+)?'  # optional port
+    r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    if re.match(regex, title):
+        return title.split('/')[4]
+    else:
+        return title
 
 
 class ConvertView(APIView):
@@ -219,15 +229,15 @@ class BookmarkGetView(APIView):
         bookmarks = Bookmark.objects.filter(email=request.POST.get('email'))
         if bookmarks:
             return Response(
-                {   'status':'200',
-                    'bookmarks':[
-                {
-                    'pk':bookmark.pk,
-                    'title': bookmark.title,
-                    'url': bookmark.url
-                }
-                for bookmark in bookmarks]}
-                )
+                {'status': '200',
+                    'bookmarks': [
+                        {
+                            'pk': bookmark.pk,
+                            'title': bookmark.title,
+                            'url': bookmark.url
+                        }
+                        for bookmark in bookmarks]}
+            )
         return Response()
 
 
@@ -242,14 +252,16 @@ class BookmarkCreateView(APIView):
         bookmark = Bookmark()
         bookmark.email = email
 
-        bookmark.title = title
+        bookmark.title = check_name(title)
         bookmark.url = url
         bookmark.save()
         return Response({'status': 200})
 
+
 class BookmarkDeleteView(APIView):
-    permission_classes=(AllowAny,)
-    def post(self,request,pk):
-        bookmark=Bookmark.objects.get(pk=pk)
+    permission_classes = (AllowAny,)
+
+    def post(self, request, pk):
+        bookmark = Bookmark.objects.get(pk=pk)
         bookmark.delete()
-        return Response({"status":200})
+        return Response({"status": 200})

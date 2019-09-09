@@ -42,7 +42,7 @@ class PixView(APIView):
     def get(self, request, term):
         key = '12208529-4c52328be6cfa6e47e390cdaf'
         # 'https://pixabay.com/api/?key={key}&q={term}&image_type=photo&pretty=true';
-        url = f'https://pixabay.com/api/?key={key}&q={term}&image_type=photo&pretty=true'
+        url = f'https://pixabay.com/api/?key={key}&q={term}&image_type=photo&pretty=true&page=1'
         response = requests.get(url).json()
         return Response(response)
 

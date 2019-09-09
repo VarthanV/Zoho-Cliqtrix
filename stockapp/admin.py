@@ -1,4 +1,3 @@
 from django.contrib import admin
-from .models import *
-admin.site.register(Image)
-admin.site.register(Country)
+from .models import Bookmark
+admin.site.register(Bookmark)

@@ -67,8 +67,22 @@ class StockView(APIView):
             f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={code}&apikey=E5VH3S3NZOHR3WRJ.')
        
         return Response(response.json())
-
-
+class ZoneView(APIView):
+      permission_classes = (AllowAny,)
+      def get(self,request,code):
+          key = "71OD11E2E8ZG"
+          #"http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName;
+          url=f'http://api.timezonedb.com/v2.1/list-time-zone?key={key}&format=json&country={code}&fields=zoneName'
+          response=requests.get(url)
+          return Response(response.json())
+class TimeView(APIView):
+    permission_classes=(AllowAny,)
+    def get(self,request,zone):
+        key = "71OD11E2E8ZG"
+        #"http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted;
+        url=f'http://api.timezonedb.com/v2.1/get-time-zone?key={key}&format=json&by=zone&zone={zone}&fields=formatted'
+        response=requests.get(url)
+        return Response(response.json())
 class AmazonView(APIView):
     permission_classes = (AllowAny,)
 

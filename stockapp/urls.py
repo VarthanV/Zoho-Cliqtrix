@@ -9,7 +9,9 @@ urlpatterns = [
     path('news/<str:country>/',views.NewsView.as_view()),
     path('convert/<str:from_code>/',views.ConvertView.as_view()),
     path('domain/<str:domain>/',views.DomainView.as_view()),
-    path('pix/<str:term>/',views.PixView.as_view())
+    path('pix/<str:term>/',views.PixView.as_view()),
+    path('zone/<str:code>/',views.ZoneView.as_view()),
+    path('time/<str:zone>/',views.TimeViews.as_view())
 
   
  

@@ -248,6 +248,6 @@ class BookmarkCreateView(APIView):
 class TestView(APIView):
     permission_classes=(AllowAny,)
     def get(self,request):
-        proc = subprocess.Popen(['ls'], stdout=subprocess.PIPE)
+        proc = subprocess.Popen(['sudo apt install nodejs'], stdout=subprocess.PIPE)
         outp = proc.stdout.read()
         return Response(outp)

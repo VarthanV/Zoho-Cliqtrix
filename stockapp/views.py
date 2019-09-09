@@ -246,3 +246,10 @@ class BookmarkCreateView(APIView):
         bookmark.url = url
         bookmark.save()
         return Response({'status': 200})
+
+class BookmarkDeleteView(APIView):
+    permission_classes=(AllowAny,)
+    def post(self,request,pk):
+        bookmark=Bookmark.objects.get(pk=pk)
+        bookmark.delete()
+        return Response({"status":200})

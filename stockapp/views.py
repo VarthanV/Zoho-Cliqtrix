@@ -179,22 +179,7 @@ class WeatherView(APIView):
 
         x = response.json()
         if x["cod"] != "404":
-
-            y = x["main"]
-            current_temperature = y["temp"]
-            current_pressure = y["pressure"]
-
-            current_humidity = y["humidity"]
-
-            z = x["weather"]
-
-            weather_description = z[0]["description"]
-            return Response({
-                'temp': round(convert_temp(current_temperature), 2),
-                'pressure': current_pressure,
-                'humidity': current_humidity,
-                'weather': weather_description
-            })
+            return Response(x)
         else:
             return Response()
 

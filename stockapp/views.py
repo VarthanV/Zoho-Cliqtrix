@@ -215,7 +215,8 @@ class BookmarkGetView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        bookmarks = Bookmark.objects.filter(email=request.POST['email'][0])
+        print(request.POST.get('email'))
+        bookmarks = Bookmark.objects.filter(email=request.POST.get('email'))
         if bookmarks:
             return Response(
                 {   'status':'200',

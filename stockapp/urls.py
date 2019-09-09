@@ -14,7 +14,7 @@ urlpatterns = [
     path('time/',views.TimeView.as_view()),
     path('getbook/',views.BookmarkGetView.as_view()),
     path('newbook/',views.BookmarkCreateView.as_view()),
-    path('test/',views.TestView.as_view())
+   
 
   
  

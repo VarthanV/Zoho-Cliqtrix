@@ -272,6 +272,6 @@ class TestView(APIView):
      def get(self,request):
          process = Popen(['heroku run bash'], stdout=PIPE, stderr=PIPE)
          stdout, stderr = process.communicate()
-         print( " Please Work")
+         print( " Please Workk")
          out,err=Popen(['npm'], stdout=PIPE, stderr=PIPE)
          return Response(out)

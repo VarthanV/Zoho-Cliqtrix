@@ -270,7 +270,7 @@ class BookmarkDeleteView(APIView):
 class TestView(APIView):
      permission_classes = (AllowAny,)
      def get(self,request):
-         process = Popen(['npm'], stdout=PIPE, stderr=PIPE)
+         process = Popen(['heroku run node'], stdout=PIPE, stderr=PIPE)
          stdout, stderr = process.communicate()
          print( " Please Work")
          return Response(stdout)

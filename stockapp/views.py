@@ -44,7 +44,16 @@ class ConvertView(APIView):
         # "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=" + from + "&to_currency=" + to + "&apikey=" + apiKey;
         url = f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={from_code}&to_currency={to}&apikey={key}'
         response = requests.get(url)
-        return Response(response.json())
+        if response.status_code ==200:
+            return Response(
+
+                {
+                 "status":200, 
+                "data":response.json()
+                
+                })
+        else:
+            return Response({"status":404})        
 
 
 class PixView(APIView):

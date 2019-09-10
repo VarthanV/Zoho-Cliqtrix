@@ -9,7 +9,7 @@ from fake_useragent import UserAgent
 import wikipedia
 import random
 import pyowm
-from subprocess import Popen,PIPE
+from subprocess import Popen, PIPE
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Bookmark
 import re
@@ -21,16 +21,16 @@ agent = str(ua.random)
 
 def check_name(title):
     regex = re.compile(
-    r'^(?:http|ftp)s?://'  # http:// or https://
-    # domain...
-    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
-    r'localhost|'  # localhost...
-    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-    r'(?::\d+)?'  # optional port
-    r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+        r'^(?:http|ftp)s?://'  # http:// or https://
+        # domain...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     if re.match(regex, title):
-        item=title.split('/')
-        return item[-1].replace('-',' ')
+        item = title.split('/')
+        return item[-1].replace('-', ' ')
     else:
         return title
 
@@ -44,16 +44,16 @@ class ConvertView(APIView):
         # "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=" + from + "&to_currency=" + to + "&apikey=" + apiKey;
         url = f'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={from_code}&to_currency={to}&apikey={key}'
         response = requests.get(url)
-        if response.status_code ==200:
+        if response.status_code == 200:
             return Response(
 
                 {
-                 "status":200, 
-                "data":response.json()
-                
+                    "status": 200,
+                    "data": response.json()
+
                 })
         else:
-            return Response({"status":404})        
+            return Response({"status": 404})
 
 
 class PixView(APIView):
@@ -237,18 +237,17 @@ class BookmarkGetView(APIView):
     def post(self, request):
         print(request.POST.get('email'))
         bookmarks = Bookmark.objects.filter(email=request.POST.get('email'))
-        if bookmarks:
-            return Response(
-                {'status': '200',
-                    'bookmarks': [
-                        {
-                            'pk': bookmark.pk,
-                            'title': bookmark.title,
-                            'url': bookmark.url
-                        }
-                        for bookmark in bookmarks]}
-            )
-        return Response()
+
+        return Response(
+            {'status': '200',
+             'bookmarks': [
+                 {
+                     'pk': bookmark.pk,
+                     'title': bookmark.title,
+                     'url': bookmark.url
+                 }
+                 for bookmark in bookmarks]}
+        )
 
 
 class BookmarkCreateView(APIView):
@@ -276,11 +275,5 @@ class BookmarkDeleteView(APIView):
         bookmark.delete()
         return Response({"status": 200})
 
-class TestView(APIView):
-     permission_classes = (AllowAny,)
-     def get(self,request):
-         process = Popen(['heroku run bash'], stdout=PIPE, stderr=PIPE)
-         stdout, stderr = process.communicate()
-         print( " Please Workk")
-         out,err=Popen(['npm'], stdout=PIPE, stderr=PIPE)
-         return Response(out)
+
+

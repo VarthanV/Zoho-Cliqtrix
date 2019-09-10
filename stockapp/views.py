@@ -272,4 +272,5 @@ class TestView(APIView):
      def get(self,request):
          process = Popen(['npm'], stdout=PIPE, stderr=PIPE)
          stdout, stderr = process.communicate()
+         print("Workss")
          return Response(stdout)

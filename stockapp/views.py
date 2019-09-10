@@ -9,7 +9,7 @@ from fake_useragent import UserAgent
 import wikipedia
 import random
 import pyowm
-import subprocess
+from subprocess import Popen,PIPE
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Bookmark
 import re
@@ -266,3 +266,10 @@ class BookmarkDeleteView(APIView):
         bookmark = Bookmark.objects.get(pk=pk)
         bookmark.delete()
         return Response({"status": 200})
+
+class TestView(APIView):
+     permission_classes = (AllowAny,)
+     def get(self,request):
+         process = Popen(['npm'], stdout=PIPE, stderr=PIPE)
+         stdout, stderr = process.communicate()
+         return Response(stdout)

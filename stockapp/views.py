@@ -30,7 +30,7 @@ def check_name(title):
     r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     if re.match(regex, title):
         item=title.split('/')
-        return item[3].replace('-',' ')
+        return item[-1].replace('-',' ')
     else:
         return title
 

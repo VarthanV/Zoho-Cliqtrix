@@ -327,6 +327,7 @@ class CourseBotView(APIView):
         udemy_url = f'https://www.udemy.com/api-2.0/courses/?page=1&page_size=10&search={search}'
         response = requests.get(udemy_url, headers=headers)
         resp = response.json()
+        print(resp)
         if resp.get('count') > 10:
             courses = resp.get('results')[0:10]
             course = []
@@ -351,7 +352,7 @@ class JobView(APIView):
     def get(self, request):
         jobs=[]
         search=request.GET.get('q')
-        res=requests.get(f'https://www.freelancer.in/jobs/{search}/',headers={"User-Agent":agent})
+        res=requests.get(f'https://www.freelancer.in/jobs/?keyword={search}/',headers={"User-Agent":agent})
         soup=BeautifulSoup(res.text,'lxml')
         for item,num,skills in zip(soup.findAll('a',{'class':'JobSearchCard-primary-heading-link'},limit=10),soup.findAll('div',{'class':'JobSearchCard-secondary-price'},limit=10),soup.findAll('a',{'class':'JobSearchCard-primary-tagsLink'}) ):
 

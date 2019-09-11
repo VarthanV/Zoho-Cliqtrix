@@ -11,3 +11,5 @@ djangorestframework
 requests
 wikipedia
 lxml
+apiclient
+google-api-python-client

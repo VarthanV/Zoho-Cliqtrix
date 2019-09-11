@@ -282,7 +282,7 @@ def get_tube_results(query):
     # https://www.youtube.com/watch?v=sLtki8Ezz7c -watch url
     # https://www.youtube.com/playlist?list=PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3 - Playslit
 
-    DEVELOPER_KEY = "AIzaSyDlkZhifaMdKs2zEEPcq7EUL_tMxvd605w"
+    DEVELOPER_KEY = "AIzaSyDhgWQc-b07k25JQ2r4j2gDq2NWk_MMzhA"
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
     youtube_object = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,

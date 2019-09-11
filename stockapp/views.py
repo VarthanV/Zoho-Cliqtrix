@@ -354,7 +354,7 @@ class JobView(APIView):
         search=request.GET.get('q')
         res=requests.get(f'https://www.freelancer.in/jobs/?keyword={search}/',headers={"User-Agent":agent})
         soup=BeautifulSoup(res.text,'lxml')
-        for item,num,skills in zip(soup.findAll('a',{'class':'JobSearchCard-primary-heading-link'},limit=10),soup.findAll('div',{'class':'JobSearchCard-secondary-price'},limit=10),soup.findAll('a',{'class':'JobSearchCard-primary-tagsLink'}) ):
+        for item,num,skills in zip(soup.findAll('a',{'class':'JobSearchCard-primary-heading-link'},limit=10),soup.findAll('div',{'class':'JobSearchCard-secondary-price'},limit=10),soup.findAll('a',{'class':'JobSearchCard-primary-tagsLink'},limit=10) ):
 
             data=  {  'title':item.getText().strip(),"cost" :re.findall('\d+',num.getText())[0] ,'skills':skills.getText(),'url':f' https://freelancer.in{item["href"]}'}
             jobs.append(data)

@@ -16,7 +16,8 @@ urlpatterns = [
     path('newbook/',views.BookmarkCreateView.as_view()),
     path('delbook/<int:pk>/',views.BookmarkDeleteView.as_view()),
     #path('test/',views.TestView.as_view())
-   
+    path('course/',views.CourseBotView.as_view()),
+    path('job/',views.JobView.as_view())
 
   
  

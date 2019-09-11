@@ -6,13 +6,15 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from freelancersdk.session import Session
+from freelancersdk.resources.projects.projects import get_jobs
 import wikipedia
 import random
 import pyowm
-from subprocess import Popen, PIPE
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Bookmark
 import re
+from apiclient.discovery import build
 owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
 newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
@@ -276,4 +278,75 @@ class BookmarkDeleteView(APIView):
         return Response({"status": 200})
 
 
+def get_tube_results(query):
+    # https://www.youtube.com/watch?v=sLtki8Ezz7c -watch url
+    # https://www.youtube.com/playlist?list=PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3 - Playslit
 
+    DEVELOPER_KEY = "AIzaSyDlkZhifaMdKs2zEEPcq7EUL_tMxvd605w"
+    YOUTUBE_API_SERVICE_NAME = "youtube"
+    YOUTUBE_API_VERSION = "v3"
+    youtube_object = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+                           developerKey=DEVELOPER_KEY)
+    search_keyword = youtube_object.search().list(q=f'{query} videos', part="id, snippet",
+                                                  maxResults=10).execute()
+
+    results = search_keyword.get("items", [])
+    print(results[0])
+    videos = []
+    if len(results) > 0:
+        for item in results:
+            if item['id']['kind'] == 'youtube#playlist':
+                url = f'https://www.youtube.com/playlist?list={item["id"]["playlistId"]}'
+            if item['id']['kind'] == 'youtube#video':
+                url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
+
+            data = {
+                'url': url,
+                'title': item['snippet']['title'],
+                'description': item['snippet']['description'],
+                'imgurl': item['snippet']['thumbnails']['medium']['url']
+
+            }
+
+            videos.append(data)
+
+    return videos
+
+
+class CourseBotView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        youtube_key = 'AIzaSyDlkZhifaMdKs2zEEPcq7EUL_tMxvd605w'
+        headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Authorization": "Basic RWdzUVBBQ243Ulh2OXlqczBtVEUxN21Ec2F5bmR2djh4Y0poMlE0TDpsdjNwUFFUNkw3eU4yZVdhRTBmVVNWOE9oREN0c0NZUFhjM2RGaE9YOXNUcjNBRTJYT09EMDJZdEduckhCOHBIZEtkUXBtZ3kyWTZLUmkwcmdUcGk0ZFUxT2pxQ1RoVXVZaWxEZEpoVjFlRzFGN2V2dGpRYk5MdHY0dFBtd3FKRw==",
+            "Content-Type": "application/json;charset=utf-8"
+        }
+        search = request.GET.get('q')
+        udemy_url = f'https://www.udemy.com/api-2.0/courses/?page=1&page_size=10&search={search}'
+        response = requests.get(udemy_url, headers=headers)
+        resp = response.json()
+        if resp.get('count') > 10:
+            courses = resp.get('results')[0:10]
+            course = []
+            for item in courses:
+                data = {
+                    "title": item['title'],
+                    "price": item['price'],
+                    'url': f'https://udemy.com{item["url"]}',
+                    'img': item['image_240x135']
+                }
+                course.append(data)
+
+        return Response({
+            "udemy": course,
+            "youtube": get_tube_results(search)
+        })
+
+
+class JobView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+       pass

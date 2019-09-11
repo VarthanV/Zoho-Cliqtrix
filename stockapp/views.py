@@ -287,7 +287,7 @@ def get_tube_results(query):
     YOUTUBE_API_VERSION = "v3"
     youtube_object = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                            developerKey=DEVELOPER_KEY)
-    search_keyword = youtube_object.search().list(q=f'{query} videos', part="id, snippet",
+    search_keyword = youtube_object.search().list(q=f'{query} tutorials', part="id, snippet",
                                                   maxResults=10).execute()
 
     results = search_keyword.get("items", [])

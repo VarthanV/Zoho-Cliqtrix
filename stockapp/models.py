@@ -6,3 +6,9 @@ class Bookmark(models.Model):
     title=models.TextField()
     def __str__(self):
         return self.title
+class CourseBookMark(models.Model):
+    email=models.EmailField()
+    url=models.URLField()
+    tag=models.CharField(max_length=300)
+    title=models.TextField()
+            

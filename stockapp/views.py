@@ -3,11 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 import json
+import re
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from freelancersdk.session import Session
-from freelancersdk.resources.projects.projects import get_jobs
+
 import wikipedia
 import random
 import pyowm
@@ -349,4 +349,12 @@ class JobView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-       pass
+        jobs=[]
+        search=request.GET.get('q')
+        res=requests.get(f'https://www.freelancer.in/jobs/{search}/',headers={"User-Agent":agent})
+        soup=BeautifulSoup(res.text,'lxml')
+        for item,num,skills in zip(soup.findAll('a',{'class':'JobSearchCard-primary-heading-link'},limit=10),soup.findAll('div',{'class':'JobSearchCard-secondary-price'},limit=10),soup.findAll('a',{'class':'JobSearchCard-primary-tagsLink'}) ):
+
+            data=  {  'title':item.getText().strip(),"cost" :re.findall('\d+',num.getText())[0] ,'skills':skills.getText(),'url':f' https://freelancer.in{item["href"]}'}
+            jobs.append(data)
+        return Response(jobs)    

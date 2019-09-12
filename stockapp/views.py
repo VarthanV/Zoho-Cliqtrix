@@ -11,7 +11,7 @@ import wikipedia
 import random
 import pyowm
 from wikipedia.exceptions import DisambiguationError, PageError
-from .models import Bookmark,CourseBookmark
+from .models import Bookmark
 import re
 from apiclient.discovery import build
 owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
@@ -366,12 +366,5 @@ class TubeView(APIView):
         search = request.GET.get('q')
         return Response({'youtube':get_tube_results(search)})
 
-class CourseBookmarkPostView(APIView):
-    permission_classes=(AllowAny,)
-    def get(self,request):
-        data = dict(request.POST)
-        email = data['email'][0]
-        title = data['title'][0]
-        url = data['url'][0]
-        tag=data['tag'][0]
+
 

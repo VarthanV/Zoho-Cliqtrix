@@ -293,6 +293,7 @@ def get_tube_results(query):
     results = search_keyword.get("items", [])
     print(results[0])
     videos = []
+    url=''
     if len(results) > 0:
         for item in results:
             if item['id']['kind'] == 'youtube#playlist':

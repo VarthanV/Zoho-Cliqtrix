@@ -342,7 +342,7 @@ class CourseBotView(APIView):
 
         return Response({
             "udemy": course,
-            "youtube": get_tube_results(search)
+            #"youtube": get_tube_results(search)
         })
 
 
@@ -359,3 +359,10 @@ class JobView(APIView):
             data=  {  'title':item.getText().strip(),"cost" :re.findall('\d+',num.getText())[0] ,'skills':skills.getText(),'url':f' https://freelancer.in{item["href"]}'}
             jobs.append(data)
         return Response(jobs)    
+
+class TubeView(APIView):
+    permission_classes=(AllowAny,)
+    def get(self,request):
+        search = request.GET.get('q')
+        return Response({'youtube':get_tube_results(search)})
+

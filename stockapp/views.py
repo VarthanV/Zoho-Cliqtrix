@@ -237,7 +237,7 @@ class BookmarkGetView(APIView):
 
     def post(self, request):
         print(request.POST.get('email'))
-        bookmarks = Bookmark.objects.filter(email=request.POST.get('email'))
+        bookmarks = Bookmark.objects.filter(email=request.POST.get('email')).order_by('-pk')
 
         return Response(
             {'status': '200',

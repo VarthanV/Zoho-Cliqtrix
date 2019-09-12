@@ -244,7 +244,7 @@ class BookmarkGetView(APIView):
              'bookmarks': [
                  {
                      'pk': bookmark.pk,
-                     'title': bookmark.title,
+                     'title': bookmark.title[0:random.randint(0,len(bookmark.title))],
                      'url': bookmark.url
                  }
                  for bookmark in bookmarks]}

@@ -100,12 +100,13 @@ class DomainView(APIView):
             data=response.get('WhoisRecord')
             if 'parseCode' in data:
                 if data['parseCode'] == 8:
+                    print("from Parse")
                     return Response({"status":200, "available":False })
-                elif data['parseCode'] == 0:
-            
+                
+                elif data['parseCode'] == 0 or data['parseCode'] ==9:
+                    print("From Parse")
                     return Response({"status":200, "available":True})    
-        
-        return Response({"status":200 ,"available":False,})
+        return Response({"status":200,"available":False})
    
 
 class StockView(APIView):

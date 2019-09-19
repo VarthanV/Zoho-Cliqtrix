@@ -12,6 +12,7 @@ import random
 import pyowm
 from wikipedia.exceptions import DisambiguationError, PageError
 from .models import Bookmark
+import uuid
 import re
 from apiclient.discovery import build
 owm = '22f3801dd0c2afc5dfb7c7956dfa9be0'
@@ -19,7 +20,10 @@ newsApi = 'e65f4c84411344d39cfd1c1a405a8c82'
 ua = UserAgent()
 agent = str(ua.random)
 
-
+class LoginView(APIView):
+    permission_classes=(AllowAny,)
+    def get(self,request):
+        book =Bookmark.objects.filter()
 def check_name(title):
     regex = re.compile(
         r'^(?:http|ftp)s?://'  # http:// or https://
@@ -34,6 +38,20 @@ def check_name(title):
         return item[-1].replace('-', ' ')
     else:
         return title
+def check_link(link):
+    regex = re.compile(
+        r'^(?:http|ftp)s?://'  # http:// or https://
+        # domain...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    if re.match(regex, link):
+        
+        return True
+    else:
+        return False        
 
 
 class ConvertView(APIView):
@@ -259,9 +277,10 @@ class BookmarkCreateView(APIView):
         email = data['email'][0]
         title = data['title'][0]
         url = data['url'][0]
+        if not  check_link(url):
+            return Response({"status":501})
         bookmark = Bookmark()
         bookmark.email = email
-
         bookmark.title = check_name(title)
         bookmark.url = url
         bookmark.save()

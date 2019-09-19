@@ -90,13 +90,23 @@ class DomainView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, domain):
-        headers = {
-            'Authorization': 'sso-key 3mM44UaCMkPo4p_VqQC796SGSRNAXsMVZ8vos:Cr4PmgV1Y1vqMU4oZ5Zrxd'}
-        # https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false';
-        url = f'https://api.ote-godaddy.com/v1/domains/available?domain={domain}&checkType=FAST&forTransfer=false'
-        response = requests.get(url, headers=headers)
-        return Response(response.json())
-
+        key='at_SPUm9ZJ6OTavkyPLYrhFAL0zQV5DE'
+        #https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=at_SPUm9ZJ6OTavkyPLYrhFAL0zQV5DE&domainName=tier3coders.in&outputFormat=json
+        url = f'https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey={key}&domainName={domain}&outputFormat=json'
+        response = requests.get(url).json()
+        if "ErrorMessage" in response:
+            return Response({"status":500})
+        elif 'WhoisRecord' in response:    
+            data=response.get('WhoisRecord')
+            if 'parseCode' in data:
+                if data['parseCode'] == 8:
+                    return Response({"status":200, "available":False })
+                elif data['parseCode'] == 0:
+            
+                    return Response({"status":200, "available":True})    
+        
+        return Response({"status":200 ,"available":False,})
+   
 
 class StockView(APIView):
     permission_classes = (AllowAny,)

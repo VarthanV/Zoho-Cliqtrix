@@ -153,13 +153,19 @@ class AmazonView(APIView):
 
         while len(bucket) == 0:
             response = requests.get(
-                f"https://www.amazon.in/s?k={modname}&ref=nb_sb_noss_2",  headers={'User-Agent': agent})
+                f"https://www.amazon.in/s?k={modname}&ref=nb_sb_noss_2",  headers={'User-Agent': agent},timeout=25)
             soup = BeautifulSoup(response.text, 'lxml')
             for a, b, c, d, e in zip(soup.findAll('span', {'class': 'a-size-medium a-color-base a-text-normal'}), soup.findAll('span', {'class': 'a-price-whole'}), soup.findAll('img', {'class': 's-image'}), soup.findAll('a', {'class': 'a-link-normal a-text-normal'}), soup.findAll('span', {'class': 'a-icon-alt'})):
                 # print(f"Name : {a.get_text()} Price :{b.get_text()}  Image url {c['src']}")
                 bucket.append(
                     {"name": a.get_text(), 'price': b.get_text(), 'imgurl': c['src'], 'id': d["href"].split("/")[3], 'rating': e.get_text()[0]})
-        return Response(bucket)
+            if bucket ==[]:
+                return Response({"status":500})        
+        return Response({
+            'status':200,
+            'data':bucket
+
+        } )
 
 
 class MediumView(APIView):

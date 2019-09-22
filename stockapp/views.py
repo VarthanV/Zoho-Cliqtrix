@@ -174,7 +174,7 @@ class MediumView(APIView):
     def get(self, request):
         name = request.GET.get("name")
         url = f"https://medium.com/search?q={name}"
-        res = requests.get(url, headers={'User-Agent': str(ua.random)})
+        res = requests.get(url, headers={'User-Agent': str(ua.random)},timeout=25)
         html = BeautifulSoup(res.text, "html.parser")
         posts = html.findAll("div", {"class": "postArticle"})
         posts_list = []
@@ -205,7 +205,9 @@ class MediumView(APIView):
                 posts_list.append(post_map)
             else:
                 continue
-        return Response(posts_list)
+        if posts_list ==[]:
+                return Response({"status":500})
+        return Response({ "status":200, "data":posts_list})
 
 
 class WikipediaView(APIView):

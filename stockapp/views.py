@@ -256,6 +256,18 @@ class PNRCheckingView(APIView):
     def get(self, request):
         pass
 
+class CheckLink(APIView):
+    permission_classes = (AllowAny,)
+    def get(self,request):
+        link=request.GET.get('link')
+        if check_link(link):
+            return Response({"status":200})
+        else:
+            return Response({"status":500})    
+
+
+
+
 
 class NewsView(APIView):
     permission_classes = (AllowAny,)
@@ -382,6 +394,7 @@ class CourseBotView(APIView):
             "udemy": course,
             #"youtube": get_tube_results(search)
         })
+        
 
 
 class JobView(APIView):

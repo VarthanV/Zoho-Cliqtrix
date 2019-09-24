@@ -18,7 +18,8 @@ urlpatterns = [
     #path('test/',views.TestView.as_view())
     path('course/',views.CourseBotView.as_view()),
     path('job/',views.JobView.as_view()),
-    path('tube/',views.TubeView.as_view())
+    path('tube/',views.TubeView.as_view()),
+    path('checklink/',views.CheckLink.as_view())
 
   
  

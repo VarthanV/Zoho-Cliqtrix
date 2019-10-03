@@ -14,3 +14,5 @@ lxml
 apiclient
 google-api-python-client
 psycopg2-binary
+dj-database-url
+psycopg2

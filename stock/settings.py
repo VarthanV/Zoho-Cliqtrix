@@ -79,11 +79,7 @@ WSGI_APPLICATION = 'stock.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'postgresql-cubed-21717',
-        'USER':'wxriexhhwbdaaa',
-        'PASSWORD':'274220f9f732de552002d0bf45d1ffdb3fddad9a0fc83469e25aa132aa8613eb',
-        'HOST':	'ec2-184-73-169-163.compute-1.amazonaws.com',
-        'PORT':'5432'
+        'NAME': os.path.join(BASE_DIR, 'postgresql'),
     }
 }
 import dj_database_url

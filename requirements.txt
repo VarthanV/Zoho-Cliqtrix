@@ -13,3 +13,4 @@ wikipedia
 lxml
 apiclient
 google-api-python-client
+psycopg2-binary
